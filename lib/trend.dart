@@ -3,58 +3,62 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class HomePage extends StatefulWidget {
+class TrendPage extends StatefulWidget {
   final Widget child;
 
-  HomePage({Key key, this.child}) : super(key: key);
+  TrendPage({Key key, this.child}) : super(key: key);
 
-  _HomePageState createState() => _HomePageState();
+  _TrendPageState createState() => _TrendPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _TrendPageState extends State<TrendPage> {
   List<charts.Series<StafStatus, String>> _seriesData;
   List<charts.Series<Task, String>> _seriesPieData;
 
   _generateData() {
     var ikhwan = [
-      new StafStatus('Tetap', 131),
-      new StafStatus('Kontrak', 134),
-      new StafStatus('Harian Lepas', 0),
-      new StafStatus('Tenaga Ahli', 3),
+      new StafStatus('ikhwan', 'Tetap', 131),
+      new StafStatus('ikhwan', 'Kontrak', 134),
+      new StafStatus('ikhwan', 'Harian Lepas', 0),
+      new StafStatus('ikhwan', 'Tenaga Ahli', 3),
     ];
     var akhwat = [
-      new StafStatus('Tetap', 3),
-      new StafStatus('Kontrak', 29),
-      new StafStatus('Harian Lepas', 0),
-      new StafStatus('Tenaga Ahli', 0),
+      new StafStatus('akhwat', 'Tetap', 3),
+      new StafStatus('akhwat', 'Kontrak', 29),
+      new StafStatus('akhwat', 'Harian Lepas', 0),
+      new StafStatus('akhwat', 'Tenaga Ahli', 0),
     ];
 
     var piedata = [
-      new Task('Pusat', 39.00, Color(0xff15277B)),
-      new Task('Cabang', 61.00, Color(0xff7B156E)),
+      new Task('Pusat 117 Pegawai', 39.00, Colors.teal[700]),
+      new Task('Cabang 183 Pegawai', 61.00, Color(0xff6CDDE3)),
     ];
 
     _seriesData.add(
       charts.Series(
-        domainFn: (StafStatus stafStatus, _) => stafStatus.place,
-        measureFn: (StafStatus stafStatus, _) => stafStatus.quantity,
+        domainFn: (StafStatus stafStatus, _) => stafStatus.status,
+        measureFn: (StafStatus stafStatus, _) => stafStatus.jumlah,
         id: '2017',
         data: ikhwan,
         fillPatternFn: (_, __) => charts.FillPatternType.solid,
         fillColorFn: (StafStatus stafStatus, _) =>
-            charts.ColorUtil.fromDartColor(Color(0xff15277B)),
+            charts.ColorUtil.fromDartColor(Colors.teal[700]),
+
+        labelAccessorFn: (StafStatus stafStatus,_)=> '${stafStatus.jk} : ${stafStatus.jumlah.toString()}',
       ),
     );
 
     _seriesData.add(
       charts.Series(
-        domainFn: (StafStatus stafStatus, _) => stafStatus.place,
-        measureFn: (StafStatus stafStatus, _) => stafStatus.quantity,
+        domainFn: (StafStatus stafStatus, _) => stafStatus.status,
+        measureFn: (StafStatus stafStatus, _) => stafStatus.jumlah,
         id: '2018',
         data: akhwat,
         fillPatternFn: (_, __) => charts.FillPatternType.solid,
         fillColorFn: (StafStatus stafStatus, _) =>
-            charts.ColorUtil.fromDartColor(Color(0xff7B156E)),
+            charts.ColorUtil.fromDartColor(Color(0xff6CDDE3)),
+
+        labelAccessorFn: (StafStatus stafStatus,_)=> '${stafStatus.jk} : ${stafStatus.jumlah.toString()}',
       ),
     );
 
@@ -87,10 +91,10 @@ class _HomePageState extends State<HomePage> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xff1976d2),
+            backgroundColor: Colors.teal,
             //backgroundColor: Color(0xff308e1c),
             bottom: TabBar(
-              indicatorColor: Color(0xff9962D0),
+              indicatorColor: Colors.white,
               tabs: [
                 Tab(
                   icon: Icon(FontAwesomeIcons.solidChartBar),
@@ -98,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                 Tab(icon: Icon(FontAwesomeIcons.chartPie)),
               ],
             ),
-            title: Text('Pegawai Staf Berdasarkan Status'),
+            title: Text('Pegawai Staf'),
           ),
           body: TabBarView(
             children: [
@@ -108,19 +112,24 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Column(
                       children: <Widget>[
+                        Text(
+                          'Berdasarkan Status',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 14.0,fontWeight: FontWeight.bold),
+                        ),
                         Expanded(
                           child: charts.BarChart(
                             _seriesData,
                             animate: true,
+                            vertical: false,
                             barGroupingType: charts.BarGroupingType.grouped,
+                            barRendererDecorator: charts.BarLabelDecorator<String>(),
                             //behaviors: [new charts.SeriesLegend()],
                             animationDuration: Duration(seconds: 1),
                           ),
                         ),
-                        Text(
-                          '\n134 Tetap = 131 Ikhwan & 3 Akhwat \n163 Kontrak = 134 Ikhwan & 29 Akhwat \n0 Harian Lepas \n3 Tenaga Ahli Ikhwan \n ',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 14.0,fontWeight: FontWeight.bold),
+                        SizedBox(
+                          height: 150,
                         ),
                       ],
                     ),
@@ -133,6 +142,11 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Column(
                       children: <Widget>[
+                        Text(
+                          'Berdasarkan Homebase',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 14.0,fontWeight: FontWeight.bold),
+                        ),
                         SizedBox(height: 10.0,),
                         Expanded(
                           child: charts.PieChart(
@@ -146,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                                   desiredMaxRows: 2,
                                   cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
                                   entryTextStyle: charts.TextStyleSpec(
-                                      color: charts.MaterialPalette.purple.shadeDefault,
+                                      color: charts.MaterialPalette.black,
                                       fontFamily: 'Georgia',
                                       fontSize: 11),
                                 )
@@ -174,10 +188,12 @@ class _HomePageState extends State<HomePage> {
 }
 
 class StafStatus {
-  String place;
-  int quantity;
+  String status;
+  int jumlah;
+  String jk;
+  
 
-  StafStatus(this.place, this.quantity);
+  StafStatus(this.jk, this.status, this.jumlah);
 }
 
 class Task {
