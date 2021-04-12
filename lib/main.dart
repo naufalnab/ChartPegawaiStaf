@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:statistik/bar.dart';
 import 'package:statistik/guru.dart';
 import 'package:statistik/staf.dart';
 import 'package:statistik/trend.dart';
