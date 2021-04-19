@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:statistik/guru.dart';
 import 'package:statistik/staf.dart';
 import 'package:statistik/trend.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -63,6 +64,12 @@ class HomeScreen extends StatelessWidget {
   }
   void navigateTren(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => TrendPage()));
+  }
+
+  Future data(String token, String chart) async {
+    final response = await http.get(
+      ''
+    );
   }
 }
 
